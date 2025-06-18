@@ -257,9 +257,6 @@ scc_detection(
 
     if (sub_v_count > 0) {
       vertex_t wcc_fq_size = 0;
-      step = sub_v_count / world_size;
-      if (sub_v_count % world_size != 0)
-        step += 1;
 
       for (index_t i = 0; i < sub_v_count; ++i) {
         color[i] = i;

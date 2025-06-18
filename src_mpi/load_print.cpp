@@ -55,10 +55,9 @@ print_time_result(
   index_t run_times,
   std::vector<double>& avg_time)
 {
-
   if (run_times > 0) {
     for (double& t : avg_time)
-      t = (t / run_times) * 1000;
+      t = t * 1000.0 / static_cast<double>(run_times);
     printf("\nAverage Time Consumption for Running %lu Times (ms)\n", run_times);
     printf("Trim, %.3lf\n", avg_time[0]);
     printf("Elephant SCC, %.3lf\n", avg_time[1]);
