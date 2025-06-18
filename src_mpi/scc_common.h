@@ -1,5 +1,5 @@
-#ifndef SCC_COMMON_H
-#define SCC_COMMON_H
+#pragma once
+
 #include "graph.h"
 #include "util.h"
 #include "wtime.h"
@@ -28,7 +28,7 @@ scc_detection(
 
 void
 get_scc_result(
-  std::vector<index_t>& scc_id,
+  const std::vector<index_t>& scc_id,
   index_t vert_count);
 
 void
@@ -117,5 +117,3 @@ pivot_selection_from_fq(
   }
   return max_pivot;
 }
-
-#endif

@@ -11,11 +11,9 @@ graph::graph(
   const char* fw_csr_file,
   const char* bw_beg_file,
   const char* bw_csr_file)
-  : weight()
-  , src_list()
-  , src_count(0)
+  : src_count(0)
 {
-  double tm = wtime();
+  const double tm = wtime();
 
   vert_count = fsize(fw_beg_file) / sizeof(index_t) - 1;
   edge_count = fsize(fw_csr_file) / sizeof(vertex_t);

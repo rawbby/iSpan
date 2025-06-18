@@ -1,5 +1,4 @@
-#ifndef TRIM_2_3_H
-#define TRIM_2_3_H
+#pragma once
 
 #include "scc_common.h"
 #include "util.h"
@@ -798,5 +797,3 @@ trim_3_2_from_fq(
     }
   }
 }
-
-#endif

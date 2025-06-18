@@ -1,5 +1,5 @@
-#ifndef FW_BW_H
-#define FW_BW_H
+#pragma once
+
 
 #include "util.h"
 #include "wtime.h"
@@ -943,4 +943,3 @@ mice_fw_bw(
     }
   }
 }
-#endif

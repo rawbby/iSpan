@@ -23,7 +23,7 @@ graph_load(
 
 void
 get_scc_result(
-  std::vector<index_t>& scc_id,
+  const std::vector<index_t>& scc_id,
   index_t vert_count)
 {
   index_t size_1 = 0;

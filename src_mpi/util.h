@@ -1,5 +1,5 @@
-#ifndef __UTIL_H__
-#define __UTIL_H__
+#pragma once
+
 #include <algorithm>
 #include <cstdint>
 #include <mpi.h>
@@ -17,11 +17,9 @@ typedef std::int64_t depth_t;
 typedef std::int64_t color_t;
 typedef std::int64_t long_t;
 
-#define INFTY (float)10000000
 #define NEGATIVE (int)-1
 #define ORPHAN (unsigned char)254
 #define UNVIS (long)-1
-#define OUTPUT_TIME 1
 
 #define TRIM_TIMES 3
 inline off_t
@@ -32,5 +30,3 @@ fsize(const char* filename)
     return st.st_size;
   return -1;
 }
-
-#endif

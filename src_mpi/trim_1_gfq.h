@@ -1,5 +1,4 @@
-#ifndef TRIM_1_GFQ_H
-#define TRIM_1_GFQ_H
+#pragma once
 
 #include "scc_common.h"
 #include "util.h"
@@ -364,7 +363,7 @@ trim_1_from_fq_gfq(
   }
 }
 
-inline static void
+static void
 get_queue(
   const vertex_t* thread_queue,
   const vertex_t* thread_bin,
@@ -386,7 +385,7 @@ get_queue(
   }
 }
 
-inline static void
+static void
 generate_frontier_queue(
   const index_t vert_count,
   const index_t* scc_id,
@@ -421,7 +420,7 @@ generate_frontier_queue(
   }
 }
 
-inline static void
+static void
 gfq_from_queue(
   const index_t vert_count,
   const index_t* scc_id,
@@ -464,7 +463,7 @@ gfq_from_queue(
   }
 }
 
-inline static void
+static void
 bw_gfq_from_fw(
   const index_t* fw_sa,
   const index_t thread_count,
@@ -503,7 +502,7 @@ bw_gfq_from_fw(
   }
 }
 
-inline static void
+static void
 gfq_fw_bw_from_queue(
   const index_t* sa,
   const index_t thread_count,
@@ -540,7 +539,7 @@ gfq_fw_bw_from_queue(
   }
 }
 
-inline static void
+static void
 gfq_origin(
   const index_t vert_count,
   const std::vector<index_t>& scc_id,
@@ -599,5 +598,3 @@ gfq_origin(
   work_comm[world_rank] = fw_edge_num;
   std::cout << "sub v_count, " << front_comm[world_rank] << ", sub e_count, " << work_comm[world_rank] << "," << bw_edge_num << "\n";
 }
-
-#endif

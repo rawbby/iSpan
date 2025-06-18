@@ -1,5 +1,4 @@
-#ifndef __H_TIME__
-#define __H_TIME__
+#pragma once
 
 #include <stdlib.h>
 #include <sys/time.h>
@@ -16,5 +15,3 @@ wtime()
 
   return time[0] + time[1] * 1.0e-6;
 }
-
-#endif

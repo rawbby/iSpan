@@ -18,8 +18,6 @@
 #include <unordered_map>
 #include <vector>
 
-#define INF (-1)
-
 void
 scc_detection(
   const graph* g,
@@ -95,14 +93,9 @@ scc_detection(
     double time_size_1;
     double time_fw;
     double time_bw;
-    double time_size_2;
-    double time_size_3;
-    double time_gfq;
     double pivot_time;
     double time_wcc;
     double time_mice_fw_bw;
-
-    double time_comm;
 
     MPI_Barrier(MPI_COMM_WORLD);
     double time = wtime();
@@ -256,6 +249,7 @@ scc_detection(
     vertex_t sub_v_count = front_comm[world_rank];
 
     if (sub_v_count > 0) {
+      double time_comm;
       vertex_t wcc_fq_size = 0;
 
       for (index_t i = 0; i < sub_v_count; ++i) {
@@ -321,6 +315,9 @@ scc_detection(
     }
 
     if (world_rank == 0 && run_time != 1) {
+      double time_gfq;
+      double time_size_3;
+      double time_size_2;
       avg_time[0] += time_size_1_first + time_size_1 + time_size_2 + time_size_3;
 
       avg_time[1] += time_fw + time_bw;
@@ -338,19 +335,11 @@ scc_detection(
       avg_time[13] += time_size_3;
       avg_time[14] += time_gfq;
     }
-    if (OUTPUT_TIME) {
-      if (world_rank == 0) {
-        printf("\ntime size_1_first, %.3lf\ntime size_1, %.3lf\ntime pivot, %.3lf\nlargest fw, %.3lf\nlargest bw, %.3lf\nlargest fw/bw, %.3lf\ntrim size_2, %.3lf\ntrim size_3, %.3lf\nwcc time, %.3lf\nmice fw-bw time, %.3lf\nmice scc time, %.3lf\ntotal time, %.3lf\n", time_size_1_first * 1000, time_size_1 * 1000, pivot_time * 1000, time_fw * 1000, time_bw * 1000, (pivot_time + time_fw + time_bw) * 1000, time_size_2 * 1000, time_size_3 * 1000, time_wcc * 1000, time_mice_fw_bw * 1000, (time_wcc + time_mice_fw_bw) * 1000, (time_size_1_first + time_size_1 + pivot_time + time_fw + time_bw + time_size_2 + time_size_3 + time_wcc + time_mice_fw_bw) * 1000);
-      }
-    }
 #pragma omp barrier
   }
   end_time = wtime() - start_time;
   avg_time[3] += end_time;
 
-  for (auto i = 0; i < g->vert_count; ++i) {
-    std::cout << i << ": " << scc_id[i] << "(" << world_rank << ")" << std::endl;
-  }
   get_scc_result(scc_id, g->vert_count);
 
   if (!assignment.empty()) {
