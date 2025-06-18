@@ -9,9 +9,9 @@
 
 inline void
 trim_1_first(
-  index_t* scc_id,
-  const long_t* fw_beg_pos,
-  const long_t* bw_beg_pos,
+  std::vector<index_t> scc_id,
+  const std::vector<long_t>& fw_beg_pos,
+  const std::vector<long_t>& bw_beg_pos,
   index_t vert_beg,
   index_t vert_end)
 {
@@ -77,13 +77,13 @@ trim_1_first_gfq(
 
 inline void
 trim_1_normal(
-  index_t* scc_id,
-  const long_t* fw_beg_pos,
-  const long_t* bw_beg_pos,
+  std::vector<index_t>& scc_id,
+  const std::vector<long_t>& fw_beg_pos,
+  const std::vector<long_t>& bw_beg_pos,
   index_t vert_beg,
   index_t vert_end,
-  const vertex_t* fw_csr,
-  const vertex_t* bw_csr)
+  const std::vector<vertex_t>& fw_csr,
+  const std::vector<vertex_t>& bw_csr)
 {
   for (vertex_t vert_id = vert_beg; vert_id < vert_end; ++vert_id) {
     if (scc_id[vert_id] == 0) {
@@ -543,20 +543,20 @@ gfq_fw_bw_from_queue(
 inline static void
 gfq_origin(
   const index_t vert_count,
-  const index_t* scc_id,
+  const std::vector<index_t>& scc_id,
   std::vector<index_t>& frontier_queue,
-  const long_t* fw_beg_pos,
-  const vertex_t* fw_csr,
-  const long_t* bw_beg_pos,
-  const vertex_t* bw_csr,
-  vertex_t* sub_fw_beg,
-  vertex_t* sub_fw_csr,
-  vertex_t* sub_bw_beg,
-  vertex_t* sub_bw_csr,
+  const std::vector<long_t>& fw_beg_pos,
+  const std::vector<vertex_t>& fw_csr,
+  const std::vector<long_t>& bw_beg_pos,
+  const std::vector<vertex_t>& bw_csr,
+  std::vector<vertex_t>& sub_fw_beg,
+  std::vector<vertex_t>& sub_fw_csr,
+  std::vector<vertex_t>& sub_bw_beg,
+  std::vector<vertex_t>& sub_bw_csr,
   std::vector<vertex_t>& front_comm,
   std::vector<long_t>& work_comm,
   vertex_t world_rank,
-  vertex_t* vert_map)
+  std::vector<vertex_t>& vert_map)
 {
   index_t index = 0;
   index_t fw_edge_num = 0;

@@ -2,14 +2,18 @@
 
 #include "wtime.h"
 
-#include <vector>
 #include <cassert>
+#include <iostream>
+#include <vector>
 
 graph::graph(
   const char* fw_beg_file,
   const char* fw_csr_file,
   const char* bw_beg_file,
   const char* bw_csr_file)
+  : weight()
+  , src_list()
+  , src_count(0)
 {
   double tm = wtime();
 
@@ -38,8 +42,8 @@ graph::graph(
   assert(ret == edge_count);
   fclose(file);
 
-  fw_beg_pos = new index_t[vert_count + 1];
-  fw_csr = new vertex_t[edge_count];
+  fw_beg_pos.resize(vert_count + 1);
+  fw_csr.resize(edge_count);
 
   for (index_t i = 0; i < vert_count + 1; ++i)
     fw_beg_pos[i] = tmp_beg_pos[i];
@@ -69,15 +73,13 @@ graph::graph(
   assert(ret == edge_count);
   fclose(file);
 
-  bw_beg_pos = new index_t[vert_count + 1];
-  bw_csr = new vertex_t[edge_count];
-
+  bw_beg_pos.resize(vert_count + 1);
   for (index_t i = 0; i < vert_count + 1; ++i)
     bw_beg_pos[i] = tmp_beg_pos[i];
 
+  bw_csr.resize(edge_count);
   for (index_t i = 0; i < edge_count; ++i)
     bw_csr[i] = tmp_csr[i];
-
 
   std::cout << "Graph load (success): " << vert_count << " verts, "
             << edge_count << " edges " << wtime() - tm << " second(s)\n";

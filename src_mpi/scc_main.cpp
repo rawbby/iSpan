@@ -3,8 +3,8 @@
 
 #include "scc_common.h"
 #include <mpi.h>
-#include <unistd.h>
 #include <vector>
+#include <iostream>
 
 int
 main(int args, char** argv)
@@ -41,6 +41,7 @@ main(int args, char** argv)
   index_t i = 0;
 
   while (i++ < run_times) {
+    std::vector<vertex_t> empty{}; // todo get rid of this
     printf("\nRuntime: %lu\n", i);
     scc_detection(g,
                   alpha,
@@ -48,7 +49,7 @@ main(int args, char** argv)
                   avg_time,
                   world_rank,
                   world_size,
-                  i);
+                  i, empty);
   }
 
   if (world_rank == 0)

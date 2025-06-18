@@ -7,13 +7,6 @@
 #include <memory>
 #include <vector>
 
-inline auto
-prepare_assignment(const graph* g)
-{
-  const auto entries = static_cast<std::size_t>(g->vert_count + 1);
-  return std::make_unique<vertex_t[]>(entries);
-}
-
 graph*
 graph_load(
   const char* fw_beg_file,
@@ -31,11 +24,11 @@ scc_detection(
   int world_rank,
   int world_size,
   int run_time,
-  vertex_t* assignment = nullptr);
+  std::vector<vertex_t>& assignment);
 
 void
 get_scc_result(
-  index_t* scc_id,
+  std::vector<index_t>& scc_id,
   index_t vert_count);
 
 void
@@ -45,15 +38,15 @@ print_time_result(
 
 inline index_t
 pivot_selection(
-  const index_t* scc_id,
-  const long_t* fw_beg_pos,
-  const long_t* bw_beg_pos,
+  const std::vector<index_t>& scc_id,
+  const std::vector<long_t>& fw_beg_pos,
+  const std::vector<long_t>& bw_beg_pos,
   index_t vert_beg,
   index_t vert_end,
-  vertex_t* fw_csr,
-  vertex_t* bw_csr,
-  std::vector<index_t>& max_pivot_list,
-  std::vector<index_t>& max_degree_list,
+  const std::vector<vertex_t>& fw_csr,
+  const std::vector<vertex_t>& bw_csr,
+  const std::vector<index_t>& max_pivot_list,
+  const std::vector<index_t>& max_degree_list,
   index_t tid,
   index_t thread_count)
 {

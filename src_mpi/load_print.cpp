@@ -13,9 +13,9 @@ graph_load(
   std::vector<double>& avg_time)
 {
   auto* g = new graph(fw_beg_file,
-                       fw_csr_file,
-                       bw_beg_file,
-                       bw_csr_file);
+                      fw_csr_file,
+                      bw_beg_file,
+                      bw_csr_file);
 
   avg_time.assign(15, 0.0);
   return g;
@@ -23,7 +23,7 @@ graph_load(
 
 void
 get_scc_result(
-  index_t* scc_id,
+  std::vector<index_t>& scc_id,
   index_t vert_count)
 {
   index_t size_1 = 0;

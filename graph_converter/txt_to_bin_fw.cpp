@@ -12,7 +12,7 @@ typedef std::int64_t index_t;
 inline off_t
 fsize(const char* filename)
 {
-  struct stat st;
+  struct stat st{};
   if (stat(filename, &st) == 0)
     return st.st_size;
   return -1;

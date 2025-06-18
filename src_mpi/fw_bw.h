@@ -9,13 +9,13 @@
 
 inline void
 fw_bfs(
-  const index_t* scc_id,
-  const long_t* fw_beg_pos,
-  const long_t* bw_beg_pos,
+  const std::vector<index_t>& scc_id,
+  const std::vector<long_t>& fw_beg_pos,
+  const std::vector<long_t>& bw_beg_pos,
   index_t vert_beg,
   index_t vert_end,
-  const vertex_t* fw_csr,
-  const vertex_t* bw_csr,
+  const std::vector<vertex_t>& fw_csr,
+  const std::vector<vertex_t>& bw_csr,
   depth_t* fw_sa,
   std::vector<index_t>& front_comm,
   vertex_t root,
@@ -26,8 +26,8 @@ fw_bfs(
   vertex_t world_size,
   vertex_t world_rank,
   vertex_t step,
-  vertex_t* fq_comm,
-  unsigned int* sa_compress,
+  std::vector<vertex_t>& fq_comm,
+  std::vector<unsigned int>& sa_compress,
   vertex_t virtual_count)
 {
   depth_t level = 0;
@@ -189,7 +189,7 @@ fw_bfs(
         double temp_time = wtime();
 
         MPI_Allreduce(MPI_IN_PLACE,
-                      sa_compress,
+                      sa_compress.data(),
                       virtual_count / 32,
 
                       MPI_UNSIGNED,
@@ -216,7 +216,7 @@ fw_bfs(
 
         for (vertex_t i = 0; i < world_size; ++i) {
           if (i != world_rank) {
-            MPI_Isend(fq_comm,
+            MPI_Isend(fq_comm.data(),
                       front_comm[world_rank],
                       MPI_INT,
                       i,
@@ -267,13 +267,13 @@ fw_bfs(
 
 inline void
 bw_bfs(
-  index_t* scc_id,
-  const long_t* fw_beg_pos,
-  const long_t* bw_beg_pos,
+  std::vector<index_t>& scc_id,
+  const std::vector<long_t>& fw_beg_pos,
+  const std::vector<long_t>& bw_beg_pos,
   index_t vert_beg,
   index_t vert_end,
-  const vertex_t* fw_csr,
-  const vertex_t* bw_csr,
+  const std::vector<vertex_t>& fw_csr,
+  const std::vector<vertex_t>& bw_csr,
   const depth_t* fw_sa,
   depth_t* bw_sa,
   std::vector<index_t>& front_comm,
@@ -286,8 +286,8 @@ bw_bfs(
   vertex_t world_size,
   vertex_t world_rank,
   vertex_t step,
-  vertex_t* fq_comm,
-  unsigned int* sa_compress)
+  std::vector<vertex_t>& fq_comm,
+  std::vector<unsigned int>& sa_compress)
 {
   bw_sa[root] = 0;
   bool is_top_down = true;
@@ -379,9 +379,9 @@ bw_bfs(
       }
 
       MPI_Allreduce(MPI_IN_PLACE,
-                    scc_id,
-                    vert_count,
-                    MPI_INT,
+                    scc_id.data(),
+                    scc_id.size(),
+                    MPI_LONG,
                     MPI_MAX,
                     MPI_COMM_WORLD);
 
@@ -408,9 +408,9 @@ bw_bfs(
 
     if (front_count == 0) {
       MPI_Allreduce(MPI_IN_PLACE,
-                    scc_id,
-                    vert_count,
-                    MPI_INT,
+                    scc_id.data(),
+                    scc_id.size(),
+                    MPI_LONG,
                     MPI_MAX,
                     MPI_COMM_WORLD);
       break;
@@ -439,9 +439,8 @@ bw_bfs(
       double temp_time = wtime();
       if (front_count > 10000) {
         MPI_Allreduce(MPI_IN_PLACE,
-                      sa_compress,
-
-                      vert_count / 32 + 32,
+                      sa_compress.data(),
+                      sa_compress.size(),
                       MPI_UNSIGNED,
                       MPI_BOR,
                       MPI_COMM_WORLD);
@@ -459,7 +458,7 @@ bw_bfs(
 
         MPI_Allreduce(MPI_IN_PLACE,
                       front_comm.data(),
-                      world_size,
+                      front_comm.size(),
                       MPI_INT,
                       MPI_MAX,
                       MPI_COMM_WORLD);
@@ -468,7 +467,7 @@ bw_bfs(
 
         for (vertex_t i = 0; i < world_size; ++i) {
           if (i != world_rank) {
-            MPI_Isend(fq_comm,
+            MPI_Isend(fq_comm.data(),
                       front_comm[world_rank],
                       MPI_INT,
                       i,
@@ -840,7 +839,7 @@ process_wcc(
   index_t vert_beg,
   index_t vert_end,
   std::vector<vertex_t>& wcc_fq,
-  vertex_t* color,
+  std::vector<vertex_t>& color,
   vertex_t& wcc_fq_size)
 {
   std::set<vertex_t> s_fq;
@@ -859,13 +858,13 @@ process_wcc(
 
 inline void
 mice_fw_bw(
-  const color_t* wcc_color,
-  index_t* scc_id,
-  const index_t* sub_fw_beg,
-  const index_t* sub_bw_beg,
-  const vertex_t* sub_fw_csr,
-  const vertex_t* sub_bw_csr,
-  vertex_t* fw_sa,
+  std::vector<color_t>& wcc_color,
+  std::vector<index_t>& scc_id,
+  std::vector<index_t>& sub_fw_beg,
+  std::vector<index_t>& sub_bw_beg,
+  std::vector<vertex_t>& sub_fw_csr,
+  std::vector<vertex_t>& sub_bw_csr,
+  std::vector<vertex_t>& fw_sa,
   index_t tid,
   index_t thread_count,
   vertex_t sub_v_count,

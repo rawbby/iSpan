@@ -3,10 +3,13 @@
 #include "./test_util.h"
 
 #include <filesystem>
+#include <iostream>
+#include <mpi.h>
+#include <thread>
 #include <vector>
 
 int
-main()
+main(int argc, char** argv)
 {
   // forward graph
   constexpr auto fn_fw_adjacent = "toy2_fw_adjacent.bin";
@@ -28,7 +31,7 @@ main()
   ASSERT(std::filesystem::exists(fn_bw_head));
   ASSERT(std::filesystem::exists(fn_in_degree));
 
-  MPI_Init(nullptr, nullptr);
+  MPI_Init(&argc, &argv);
 
   int world_rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
@@ -86,8 +89,8 @@ main()
 
   if (!world_rank) {
 
-    const auto assignment = prepare_assignment(&g);
-    scc_detection(&g, 30, 10, avg_time, world_rank, world_size, 1, assignment.get());
+    std::vector<vertex_t> assignment(g.vert_count + 1);
+    scc_detection(&g, 30, 10, avg_time, world_rank, world_size, 1, assignment);
 
     ASSERT(assignment[0] == 0);
     ASSERT(assignment[1] == 1);
@@ -99,7 +102,8 @@ main()
 
   } else {
 
-    scc_detection(&g, 30, 10, avg_time, world_rank, world_size, 1, nullptr);
+    std::vector<vertex_t> empty{};
+    scc_detection(&g, 30, 10, avg_time, world_rank, world_size, 1, empty);
   }
 
   MPI_Finalize();

@@ -117,7 +117,11 @@ num_threads(thread_count)
     double time_size_2;
     double time_size_3;
     double time_gfq;
+    double time_color_1;
+    double time_color_2;
+    double time_color;
     double pivot_time;
+    double time_color_init;
     double time_wcc;
     double time_mice_fw_bw;
     const vertex_t upper_bound = vert_count / thread_count * 5;

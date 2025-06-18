@@ -1,6 +1,8 @@
 #include "graph.h"
 #include "util.h"
 #include "wtime.h"
+
+#include <array>
 #include <map>
 
 graph*
@@ -12,9 +14,9 @@ graph_load(
   double* avg_time)
 {
   auto* g = new graph(fw_beg_file,
-                       fw_csr_file,
-                       bw_beg_file,
-                       bw_csr_file);
+                      fw_csr_file,
+                      bw_beg_file,
+                      bw_csr_file);
 
   for (index_t i = 0; i < 15; ++i)
     avg_time[i] = 0.0;
