@@ -11,8 +11,6 @@
 #include <fcntl.h>
 #include <iostream>
 #include <mpi.h>
-#include <omp.h>
-#include <sys/mman.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <unordered_map>
@@ -100,14 +98,12 @@ scc_detection(
     MPI_Barrier(MPI_COMM_WORLD);
     double time = wtime();
 
-    trim_1_first(scc_id,
-                 g->fw_beg_pos,
-                 g->bw_beg_pos,
-                 vert_beg,
-                 vert_end);
-    std::cout << world_rank << ",Computing size_1_first cost," << (wtime() - time) * 1000 << " ms\n";
+    BEG_TIME(trim_1_first);
+    trim_1_first(scc_id, g->fw_beg_pos, g->bw_beg_pos, vert_beg, vert_end);
+    END_TIME(trim_1_first);
+    std::cout << world_rank << ": Computing trim_1_first costs " << STR_TIME(trim_1_first) << '\n';
 
-    double temp_time = wtime();
+    BEG_TIME(trim_1_first_communication);
     MPI_Allgather(MPI_IN_PLACE,
                   0,
                   MPI_INT,
@@ -115,9 +111,8 @@ scc_detection(
                   step,
                   MPI_INT,
                   MPI_COMM_WORLD);
-
-    double time_comm_trim_1 = wtime() - temp_time;
-    std::cout << world_rank << ",trim-1 comm time," << time_comm_trim_1 * 1000 << ",ms\n";
+    END_TIME(trim_1_first_communication);
+    std::cout << world_rank << ": Communication trim_1_first costs " << STR_TIME(trim_1_first) << '\n';
 
     if (world_rank == 0) {
       time_size_1_first = wtime() - time;
@@ -223,8 +218,6 @@ scc_detection(
                   MPI_MAX,
                   MPI_COMM_WORLD);
 
-    temp_time = wtime();
-
     gfq_origin(g->vert_count,
                scc_id,
                small_queue,
@@ -244,7 +237,6 @@ scc_detection(
     vertex_t sub_v_count = front_comm[world_rank];
 
     if (sub_v_count > 0) {
-      double time_comm;
       vertex_t wcc_fq_size = 0;
 
       for (index_t i = 0; i < sub_v_count; ++i) {
@@ -289,16 +281,15 @@ scc_detection(
                  wcc_fq,
                  wcc_fq_size);
 
-      temp_time = wtime();
+      BEG_TIME(final_communication);
       MPI_Allreduce(MPI_IN_PLACE,
                     scc_id_mice.data(),
                     g->vert_count,
                     MPI_LONG,
                     MPI_MAX,
                     MPI_COMM_WORLD);
-      time_comm = wtime() - temp_time;
-
-      printf("%d,final comm time,%.3lf\n", world_rank, time_comm * 1000);
+      END_TIME(final_communication);
+      std::cout << world_rank << ": Final Communication costs " << STR_TIME(final_communication) << '\n';
 
       for (index_t i = 0; i < sub_v_count; ++i) {
         vertex_t actual_v = small_queue[i];
