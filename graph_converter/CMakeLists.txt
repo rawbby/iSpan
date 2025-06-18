@@ -39,3 +39,4 @@ endfunction()
 
 convert_graph_post_build("${CMAKE_CURRENT_LIST_DIR}" "toy")
 convert_graph_post_build("${CMAKE_CURRENT_LIST_DIR}" "toy2")
+convert_graph_post_build("${CMAKE_CURRENT_LIST_DIR}" "toy3")

@@ -26,5 +26,7 @@ set(EXTRA_SOURCES
         "${CMAKE_CURRENT_SOURCE_DIR}/../src_mpi/scc_core.cpp")
 target_sources(test_toy_mpi PRIVATE ${EXTRA_SOURCES})
 target_sources(test_toy2_mpi PRIVATE ${EXTRA_SOURCES})
+target_sources(test_toy3_mpi PRIVATE ${EXTRA_SOURCES})
 add_dependencies(test_toy_mpi convert_toy)
 add_dependencies(test_toy2_mpi convert_toy2)
+add_dependencies(test_toy3_mpi convert_toy3)
