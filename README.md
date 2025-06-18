@@ -4,6 +4,8 @@
 
 ## iSpan: Parallel Identification of Strongly Connected Components with Spanning Trees
 
+[![Build with Intel oneAPI & OpenMPI](https://github.com/rawbby/iSpan/actions/workflows/cmake.yml/badge.svg?branch=rawbby-patch)](https://github.com/rawbby/iSpan/actions/workflows/cmake.yml)
+
 Here are the [Paper](include/paper/iSpan-SC18.pdf) and [Slides](include/paper/iSpan_slides.pdf) at SC'18.
 
 ## Introduction
