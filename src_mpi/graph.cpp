@@ -1,84 +1,47 @@
-#include "graph.h"
+#include "./graph.h"
+#include "./wtime.h"
 
-#include "wtime.h"
-
-#include <cassert>
+#include <filesystem>
+#include <fstream>
 #include <iostream>
+#include <system_error>
 #include <vector>
 
-graph::graph(
-  const char* fw_beg_file,
-  const char* fw_csr_file,
-  const char* bw_beg_file,
-  const char* bw_csr_file)
+template<class T>
+static void
+read_binary(const std::filesystem::path& file, std::vector<T>& dst)
+{
+  std::ifstream in(file, std::ios::binary);
+  if (!in)
+    throw std::system_error(errno, std::generic_category(), "open " + file.string());
+  in.read(reinterpret_cast<char*>(dst.data()), static_cast<std::streamsize>(dst.size() * sizeof(T)));
+  if (!in)
+    throw std::runtime_error("read " + file.string());
+}
+
+graph::graph(const std::filesystem::path& fw_beg_file,
+             const std::filesystem::path& fw_csr_file,
+             const std::filesystem::path& bw_beg_file,
+             const std::filesystem::path& bw_csr_file)
   : src_count(0)
 {
+  using namespace std::filesystem;
   const double tm = wtime();
 
-  vert_count = fsize(fw_beg_file) / sizeof(index_t) - 1;
-  edge_count = fsize(fw_csr_file) / sizeof(vertex_t);
-
-  FILE* file = fopen(fw_beg_file, "rb");
-  if (file == nullptr) {
-    std::cout << fw_beg_file << " cannot open\n";
-    exit(-1);
-  }
-
-  std::vector<index_t> tmp_beg_pos(vert_count + 1);
-  index_t ret = fread(tmp_beg_pos.data(), sizeof(index_t), vert_count + 1, file);
-  assert(ret == vert_count + 1);
-  fclose(file);
-
-  file = fopen(fw_csr_file, "rb");
-  if (file == nullptr) {
-    std::cout << fw_csr_file << " cannot open\n";
-    exit(-1);
-  }
-
-  std::vector<vertex_t> tmp_csr(edge_count);
-  ret = fread(tmp_csr.data(), sizeof(vertex_t), edge_count, file);
-  assert(ret == edge_count);
-  fclose(file);
+  vert_count = file_size(fw_beg_file) / sizeof(index_t) - 1;
+  edge_count = file_size(fw_csr_file) / sizeof(vertex_t);
 
   fw_beg_pos.resize(vert_count + 1);
   fw_csr.resize(edge_count);
-
-  for (index_t i = 0; i < vert_count + 1; ++i)
-    fw_beg_pos[i] = tmp_beg_pos[i];
-
-  for (index_t i = 0; i < edge_count; ++i)
-    fw_csr[i] = tmp_csr[i];
-
-  file = fopen(bw_beg_file, "rb");
-  if (file == nullptr) {
-    std::cout << bw_beg_file << " cannot open\n";
-    exit(-1);
-  }
-
-  tmp_beg_pos.assign(vert_count + 1, 0);
-  ret = fread(tmp_beg_pos.data(), sizeof(index_t), vert_count + 1, file);
-  assert(ret == vert_count + 1);
-  fclose(file);
-
-  file = fopen(bw_csr_file, "rb");
-  if (file == nullptr) {
-    std::cout << bw_csr_file << " cannot open\n";
-    exit(-1);
-  }
-
-  tmp_csr.assign(edge_count, 0);
-  ret = fread(tmp_csr.data(), sizeof(vertex_t), edge_count, file);
-  assert(ret == edge_count);
-  fclose(file);
-
   bw_beg_pos.resize(vert_count + 1);
-  for (index_t i = 0; i < vert_count + 1; ++i)
-    bw_beg_pos[i] = tmp_beg_pos[i];
-
   bw_csr.resize(edge_count);
-  for (index_t i = 0; i < edge_count; ++i)
-    bw_csr[i] = tmp_csr[i];
+
+  read_binary(fw_beg_file, fw_beg_pos);
+  read_binary(fw_csr_file, fw_csr);
+  read_binary(bw_beg_file, bw_beg_pos);
+  read_binary(bw_csr_file, bw_csr);
 
   std::cout << "Graph load (success): " << vert_count << " verts, "
-            << edge_count << " edges " << wtime() - tm << " second(s)\n";
+            << edge_count << " edges in "
+            << wtime() - tm << " s\n";
 }

@@ -22,7 +22,6 @@ endforeach ()
 # as src and src_mpi are not libraries but monolithic CLIs we 'steal' implementations rather than linking
 set(EXTRA_SOURCES
         "${CMAKE_CURRENT_SOURCE_DIR}/../src_mpi/graph.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../src_mpi/load_print.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/../src_mpi/scc_core.cpp")
 target_sources(test_toy_mpi PRIVATE ${EXTRA_SOURCES})
 target_sources(test_toy2_mpi PRIVATE ${EXTRA_SOURCES})

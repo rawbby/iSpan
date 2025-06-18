@@ -129,12 +129,7 @@ scc_detection(
                                     g->bw_beg_pos,
                                     0,
                                     g->vert_count,
-                                    g->fw_csr,
-                                    g->bw_csr,
-                                    max_pivot_list,
-                                    max_degree_list,
-                                    world_rank,
-                                    thread_count);
+                                    world_rank);
 
     pivot_time = wtime() - time;
 

@@ -2,6 +2,7 @@
 
 #include "util.h"
 #include <vector>
+#include <filesystem>
 
 class graph
 {
@@ -17,13 +18,14 @@ public:
   index_t vert_count;
   index_t edge_count;
 
-public:
   graph() = default;
   ~graph() = default;
-  graph(const char* fw_beg_file,
-        const char* fw_csr_file,
-        const char* bw_beg_file,
-        const char* bw_csr_file);
+
+  graph(const std::filesystem::path& fw_beg_file,
+        const std::filesystem::path& fw_csr_file,
+        const std::filesystem::path& bw_beg_file,
+        const std::filesystem::path& bw_csr_file);
+
   void gen_src() {};
   void groupby() {};
 };

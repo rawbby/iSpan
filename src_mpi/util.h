@@ -1,11 +1,6 @@
 #pragma once
 
-#include <algorithm>
 #include <cstdint>
-#include <mpi.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <sys/stat.h>
 
 #define LOCK(vert, lock) while (!__sync_bool_compare_and_swap(lock + vert, 0, -1))
 #define UNLOCK(vert, lock) lock[vert] = 0
@@ -22,11 +17,3 @@ typedef std::int64_t long_t;
 #define UNVIS (long)-1
 
 #define TRIM_TIMES 3
-inline off_t
-fsize(const char* filename)
-{
-  struct stat st;
-  if (stat(filename, &st) == 0)
-    return st.st_size;
-  return -1;
-}
