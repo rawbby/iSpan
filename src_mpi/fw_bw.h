@@ -183,16 +183,15 @@ fw_bfs(
       sync_time += wtime() - temp_time;
     }
 
-    if (is_top_down_queue || (!is_top_down)) {
+    if (is_top_down_queue || !is_top_down) {
       const auto temp_time = wtime();
 
       if (front_count > 10000) {
-        const auto  temp_time = wtime();
+        const auto temp_time = wtime();
 
         MPI_Allreduce(MPI_IN_PLACE,
                       sa_compress.data(),
                       virtual_count / 32,
-
                       MPI_UNSIGNED,
                       MPI_BOR,
                       MPI_COMM_WORLD);
@@ -214,7 +213,6 @@ fw_bfs(
                       MPI_COMM_WORLD);
 
         MPI_Request request;
-
         for (vertex_t i = 0; i < world_size; ++i) {
           if (i != world_rank) {
             MPI_Isend(fq_comm.data(),
@@ -228,7 +226,7 @@ fw_bfs(
           }
         }
 
-        vertex_t fq_begin = front_comm[world_rank];
+        auto fq_begin = front_comm[world_rank];
         for (vertex_t i = 0; i < world_size; ++i) {
           if (i != world_rank) {
             MPI_Recv(&fq_comm[fq_begin],
@@ -243,8 +241,8 @@ fw_bfs(
         }
         sync_time += wtime() - temp_time;
 
-        for (index_t i = front_comm[world_rank]; i < front_count; ++i) {
-          vertex_t v_new = fq_comm[i];
+        for (auto i = front_comm[world_rank]; i < front_count; ++i) {
+          const auto v_new = fq_comm[i];
           if (fw_sa[v_new] == -1) {
             fw_sa[v_new] = level + 1;
           }

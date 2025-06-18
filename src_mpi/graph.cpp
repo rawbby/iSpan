@@ -23,13 +23,11 @@ graph::graph(const std::filesystem::path& fw_beg_file,
              const std::filesystem::path& fw_csr_file,
              const std::filesystem::path& bw_beg_file,
              const std::filesystem::path& bw_csr_file)
-  : src_count(0)
 {
-  using namespace std::filesystem;
-  const double tm = wtime();
+  const double time_beg = wtime();
 
-  vert_count = file_size(fw_beg_file) / sizeof(index_t) - 1;
-  edge_count = file_size(fw_csr_file) / sizeof(vertex_t);
+  vert_count = static_cast<index_t>(std::filesystem::file_size(fw_beg_file) / sizeof(index_t) - 1);
+  edge_count = static_cast<index_t>(std::filesystem::file_size(fw_csr_file) / sizeof(vertex_t));
 
   fw_beg_pos.resize(vert_count + 1);
   fw_csr.resize(edge_count);
@@ -41,7 +39,7 @@ graph::graph(const std::filesystem::path& fw_beg_file,
   read_binary(bw_beg_file, bw_beg_pos);
   read_binary(bw_csr_file, bw_csr);
 
-  std::cout << "Graph load (success): " << vert_count << " verts, "
-            << edge_count << " edges in "
-            << wtime() - tm << " s\n";
+  const double time_end = wtime();
+  const double time = time_end - time_beg;
+  std::cout << "Graph load (success): " << vert_count << " Vertices, " << edge_count << " Edges (" << time << " s)\n";
 }
